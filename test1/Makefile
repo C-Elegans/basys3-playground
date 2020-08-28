@@ -15,5 +15,5 @@ $(PROJECT_NAME).bit: $(PROJECT_NAME).fasm
 
 .PHONY: prog
 prog: $(PROJECT_NAME).bit
-	openocd -f /usr/share/openocd/scripts/interface/ftdi/digilent-usb.cfg -f /usr/share/openocd/scripts/cpld/xilinx-xc7.cfg -f ../openocd.cfg -c 'pld load 0 $<; exit'
+	openocd -f ../digilent-usb.cfg -f /usr/share/openocd/scripts/cpld/xilinx-xc7.cfg -f ../openocd.cfg -c 'pld load 0 $<; exit'
 
