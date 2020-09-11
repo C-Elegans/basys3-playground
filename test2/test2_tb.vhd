@@ -5,8 +5,8 @@
 -- File       : test2_tb.vhd
 -- Author     :   <mnolan@trillian>
 -- Company    : 
--- Created    : 2020-08-28
--- Last update: 2020-08-28
+-- Created    : 2020-09-05
+-- Last update: 2020-09-06
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -16,7 +16,7 @@
 -------------------------------------------------------------------------------
 -- Revisions  :
 -- Date        Version  Author  Description
--- 2020-08-28  1.0      mnolan	Created
+-- 2020-09-05  1.0      mnolan	Created
 -------------------------------------------------------------------------------
 
 library ieee;
@@ -30,16 +30,16 @@ end entity test2_tb;
 
 -------------------------------------------------------------------------------
 
-architecture tb of test2_tb is
+architecture test2_tb of test2_tb is
 
   -- component ports
-  signal sw  : std_logic_vector(4 downto 0);
-  signal led : std_logic_vector(2 downto 0);
+  signal sw  : std_logic_vector(3 downto 0);
+  signal led : std_logic_vector(1 downto 0);
 
   -- clock
   signal Clk : std_logic := '1';
 
-begin  -- architecture tb
+begin  -- architecture test2_tb
 
   -- component instantiation
   DUT: entity work.test2
@@ -51,54 +51,31 @@ begin  -- architecture tb
   Clk <= not Clk after 10 ns;
 
   -- waveform generation
+
   WaveGen_Proc: process
   begin
     -- insert signal assignments here
-    sw <= "00000"; wait for 10 ns;
-    sw <= "00001"; wait for 10 ns;
-    sw <= "00010"; wait for 10 ns;
-    sw <= "00011"; wait for 10 ns;
-    sw <= "00100"; wait for 10 ns;
-    sw <= "00101"; wait for 10 ns;
-    sw <= "00110"; wait for 10 ns;
-    sw <= "00111"; wait for 10 ns;
-    sw <= "01000"; wait for 10 ns;
-    sw <= "01001"; wait for 10 ns;
-    sw <= "01010"; wait for 10 ns;
-    sw <= "01011"; wait for 10 ns;
-    sw <= "01100"; wait for 10 ns;
-    sw <= "01101"; wait for 10 ns;
-    sw <= "01110"; wait for 10 ns;
-    sw <= "01111"; wait for 10 ns;
-    sw <= "10000"; wait for 10 ns;
-    sw <= "10001"; wait for 10 ns;
-    sw <= "10010"; wait for 10 ns;
-    sw <= "10011"; wait for 10 ns;
-    sw <= "10100"; wait for 10 ns;
-    sw <= "10101"; wait for 10 ns;
-    sw <= "10110"; wait for 10 ns;
-    sw <= "10111"; wait for 10 ns;
-    sw <= "11000"; wait for 10 ns;
-    sw <= "11001"; wait for 10 ns;
-    sw <= "11010"; wait for 10 ns;
-    sw <= "11011"; wait for 10 ns;
-    sw <= "11100"; wait for 10 ns;
-    sw <= "11101"; wait for 10 ns;
-    sw <= "11110"; wait for 10 ns;
-    sw <= "11111"; wait for 10 ns;
+    sw <= "0000"; wait for 10 ns;
+    sw <= "0001"; wait for 10 ns;
+    sw <= "0010"; wait for 10 ns;
+    sw <= "0011"; wait for 10 ns;
+    sw <= "0100"; wait for 10 ns;
+    sw <= "0101"; wait for 10 ns;
+    sw <= "0110"; wait for 10 ns;
+    sw <= "0111"; wait for 10 ns;
+    sw <= "1000"; wait for 10 ns;
+    sw <= "1001"; wait for 10 ns;
+    sw <= "1010"; wait for 10 ns;
+    sw <= "1011"; wait for 10 ns;
+    sw <= "1100"; wait for 10 ns;
+    sw <= "1101"; wait for 10 ns;
+    sw <= "1110"; wait for 10 ns;
+    sw <= "1111"; wait for 10 ns;
 
     wait;
   end process WaveGen_Proc;
 
   
 
-end architecture tb;
+end architecture test2_tb;
 
--------------------------------------------------------------------------------
-
-configuration test2_tb_tb_cfg of test2_tb is
-  for tb
-  end for;
-end test2_tb_tb_cfg;
-
--------------------------------------------------------------------------------
