@@ -18,6 +18,7 @@ prog: $(PROJECT_NAME).bit
 	openocd -f ../digilent-usb.cfg -f /usr/share/openocd/scripts/cpld/xilinx-xc7.cfg -f ../openocd.cfg -c 'pld load 0 $<; exit'
 
 
+%_tb.o: %.o
 %.o: %.vhd
 	ghdl -a --std=08 $<
 lab2_tb: lab2_tb.o lab2.o popcnt.o decoder_7seg.o
