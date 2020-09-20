@@ -6,7 +6,7 @@
 -- Author     :   <mnolan@trillian>
 -- Company    : 
 -- Created    : 2020-09-11
--- Last update: 2020-09-11
+-- Last update: 2020-09-14
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -39,6 +39,7 @@ end entity lab2;
 
 architecture str of lab2 is
 
+constant AN_DIGIT_1 : std_logic_vector(3 downto 0) := "1110";
   -----------------------------------------------------------------------------
   -- Internal signal declarations
   -----------------------------------------------------------------------------
@@ -50,6 +51,9 @@ begin  -- architecture str
   -----------------------------------------------------------------------------
   -- Component instantiations
   -----------------------------------------------------------------------------
+  -- Since this whole thing is essentially counting the number of bits high
+  -- from the switches, and then displaying that on the LCD, it makes sense to
+  -- me to break it up into population count and doing the decoding
 
   -- instance "popcnt_1"
   popcnt_1: entity work.popcnt
@@ -63,11 +67,14 @@ begin  -- architecture str
       data    => switch_count,
       seg_out => seg_temp);
 
+  -- Connect up the segment signals to the LEDs. Since I chose conventional
+  -- order, active high for my decoder, and the basys 3 has reversed order
+  -- active low segments, we need to reverse and invert the segment bits.
   gen1: for i in 0 to 7 generate
     seg(i) <= not seg_temp(7-i);
   end generate gen1; 
 
-  an <= "1110";
+  an <= AN_DIGIT_1;
 
 end architecture str;
 

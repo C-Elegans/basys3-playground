@@ -6,7 +6,7 @@
 -- Author     :   <mnolan@trillian>
 -- Company    : 
 -- Created    : 2020-09-11
--- Last update: 2020-09-11
+-- Last update: 2020-09-14
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -51,5 +51,3 @@ begin  -- architecture str
                "11110110" when "1001",  -- 9
                "11111100" when others;  -- 0
 end architecture str;
-
--------------------------------------------------------------------------------
