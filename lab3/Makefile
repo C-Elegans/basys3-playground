@@ -1,9 +1,9 @@
-PROJECT_NAME=lab2
+PROJECT_NAME=lab3
 
 .PHONY: all
 all: $(PROJECT_NAME).bit
 
-$(PROJECT_NAME).json: $(PROJECT_NAME).vhd popcnt.vhd decoder_7seg.vhd
+$(PROJECT_NAME).json: $(PROJECT_NAME).vhd popcnt.vhd decoder_7seg.vhd baud_generator.vhd bin_to_bcd.vhd segment_controller.vhd
 	yosys -m ghdl -p "ghdl $^ -e $(PROJECT_NAME); synth_xilinx -flatten -abc9 -nobram -arch xc7 -top $(PROJECT_NAME); write_json $@" | tee yosys.log
 
 $(PROJECT_NAME).fasm: $(PROJECT_NAME).json
@@ -21,9 +21,9 @@ prog: $(PROJECT_NAME).bit
 %_tb.o: %.o
 %.o: %.vhd
 	ghdl -a --std=08 $<
-lab2_tb: lab2_tb.o lab2.o popcnt.o decoder_7seg.o
-lab2_tb.o: lab2.o
-lab2.o: popcnt.o decoder_7seg.o
+lab3_tb: lab3_tb.o lab3.o popcnt.o decoder_7seg.o baud_generator.o segment_controller.o
+lab3_tb.o: lab3.o
+lab3.o: popcnt.o decoder_7seg.o baud_generator.o segment_controller.o
 
 
 %_tb: %_tb.o %.o
