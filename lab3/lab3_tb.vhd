@@ -6,7 +6,7 @@
 -- Author     :   <mnolan@trillian>
 -- Company    : 
 -- Created    : 2020-09-20
--- Last update: 2020-09-20
+-- Last update: 2020-09-23
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -21,6 +21,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 -------------------------------------------------------------------------------
 
@@ -42,6 +43,7 @@ architecture tb of lab3_tb is
   signal sw   : std_logic_vector(15 downto 0) := (others => '0');
   signal seg  : std_logic_vector(7 downto 0);
   signal an   : std_logic_vector(3 downto 0);
+  signal led : std_logic_vector(15 downto 0);
 
   -- clock
   signal rst : std_logic := '1';
@@ -59,24 +61,26 @@ begin  -- architecture tb
       btnC => btnC,
       sw   => sw,
       seg  => seg,
-      an   => an);
+      an   => an,
+      led => led);
 
   -- clock generation
   clk <= not clk after 10 ns;
 
   -- waveform generation
   WaveGen_Proc: process
+    variable shift_temp : unsigned(16 downto 0);
   begin
     -- insert signal assignments here
     rst <= '1';
     wait for 20 ns;
     wait until clk = '1';
     rst <= '0';
-    sw <= X"ff01";
-    wait for 500 ns;
-    sw <= X"0501";
-    wait for 500 ns;
-    sw <= X"aaaa";
+    for i in 0 to 16 loop
+      shift_temp := shift_left(to_unsigned(1, 17), i) - 1;
+      sw <= std_logic_vector(shift_temp(15 downto 0));
+      wait for 500 ns;
+    end loop;  -- i
     wait;
     
   end process WaveGen_Proc;

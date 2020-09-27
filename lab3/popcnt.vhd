@@ -6,7 +6,7 @@
 -- Author     :   <mnolan@trillian>
 -- Company    : 
 -- Created    : 2020-09-11
--- Last update: 2020-09-20
+-- Last update: 2020-09-21
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -38,11 +38,14 @@ end entity popcnt;
 
 -- This part builds a binary tree of adders to sum up the number of bits
 architecture rtl of popcnt is
-  -- 4 sums of pairs of bits [0-1], [2-3], [4-5], [6-7], [8-9], [10-11],
+  -- 8 sums of pairs of bits [0-1], [2-3], [4-5], [6-7], [8-9], [10-11],
   -- [12-13], [14-15]
   signal data_sum2 : std_logic_vector(15 downto 0);
+  -- 4 sums of pairs of sums from sum2
   signal data_sum4 : std_logic_vector(11 downto 0);
+  -- 2 sums of pairs of sums from sum4
   signal data_sum8 : std_logic_vector(7 downto 0);
+  -- sum of pairs of sums from sum8
   signal data_sum16 : std_logic_vector(4 downto 0);
 
 begin  -- architecture rtl

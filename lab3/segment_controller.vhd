@@ -6,7 +6,7 @@
 -- Author     :   <mnolan@trillian>
 -- Company    : 
 -- Created    : 2020-09-20
--- Last update: 2020-09-20
+-- Last update: 2020-09-21
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -34,10 +34,13 @@ entity segment_controller is
   port (
     clk : in std_logic;
     rst : in std_logic; -- synchronous reset (active high)
-    digit_switch : in std_logic;
+    digit_switch : in std_logic; -- Pulse to switch between digits
+    -- bcd numbers for each digit to display
     bcd_in : in std_logic_vector(DIGITS * 4-1 downto 0);
 
+    -- the bcd to feed into the 7 segment decoder for the current digit
     bcd_out : out std_logic_vector(3 downto 0);
+    -- the anode select pins
     an : out std_logic_vector(DIGITS-1 downto 0)
     );
 
@@ -57,8 +60,10 @@ begin  -- architecture rtl
   begin  -- process sel_proc
     if rising_edge(clk) then
       if rst = '1' then
+        -- resets sel to 1
         sel <= (0 => '1', others => '0');
       else
+        -- On pulse of digit_switch, rotate sel left
         if digit_switch = '1' then
           sel <= sel(DIGITS-2 downto 0) & sel(DIGITS-1);
         end if;
@@ -74,6 +79,8 @@ begin  -- architecture rtl
   bcd_proc: process (bcd_in, sel) is
   begin  -- process bcd_proc
     bcd_out <= (others => '0');
+
+    -- Selects the bcd data to output by using sel as a 1-hot mux
     for i in 0 to DIGITS-1 loop
       if sel(i) = '1' then
         bcd_out <= bcd_in(i*4+3 downto i*4);

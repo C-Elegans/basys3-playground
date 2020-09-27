@@ -6,7 +6,7 @@
 -- Author     :   <mnolan@trillian>
 -- Company    : 
 -- Created    : 2020-09-20
--- Last update: 2020-09-20
+-- Last update: 2020-09-22
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -35,6 +35,7 @@ entity lab3 is
     clk : in std_logic;
     btnC : in std_logic;
     sw : in std_logic_vector(15 downto 0);
+    led : out std_logic_vector(15 downto 0);
     seg : out std_logic_vector(7 downto 0);
     an: out std_logic_vector(3 downto 0)
     );
@@ -45,9 +46,11 @@ end entity lab3;
 
 architecture rtl of lab3 is
 
+  -- Number of digits to activate
   constant DIGITS : integer := 2;
 
   signal rst : std_logic;
+  -- Flip flop synchronizer for the reset signal
   signal rst_sync : std_logic_vector(2 downto 0) := (others => '1'); 
 
   -- popcnt signals
@@ -74,6 +77,9 @@ begin  -- architecture rtl
     end if;
   end process rst_proc;
   rst <= rst_sync(2);
+
+  -- No other signals need to be synchronized because no other inputs feed into
+  -- flip flops
 
 
   popcnt_1: entity work.popcnt
@@ -112,10 +118,22 @@ begin  -- architecture rtl
       data    => bcd_seg,
       seg_out => seg_tmp);
 
+  bargraph_1: entity work.bargraph
+    generic map (
+      NUM_BITS   => 16,
+      INPUT_BITS => 5)
+    port map (
+      count    => count,
+      bargraph => led);
+
+  -- decoder_7seg uses active high segments with order abcdefg
+  -- basys 3 uses active low segments with order gfedcba
   gen1: for i in 0 to 7 generate
     seg(i) <= not seg_tmp(7-i);
   end generate gen1; 
 
+  -- Combine the an output from segment_controller with the anode disable
+  -- signal for the other digits
   an(DIGITS-1 downto 0) <= not an_tmp;
   an(3 downto DIGITS) <= (others => '1');
 

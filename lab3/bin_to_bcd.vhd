@@ -6,7 +6,7 @@
 -- Author     :   <mnolan@trillian>
 -- Company    : 
 -- Created    : 2020-09-20
--- Last update: 2020-09-20
+-- Last update: 2020-09-21
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -41,9 +41,17 @@ architecture rtl of bin_to_bcd is
   signal bin_unsigned : unsigned(4 downto 0);
   signal bin_m_10 : unsigned(4 downto 0);
 begin  -- architecture str
+  -- I could have made this generic and capable of handling the full complement
+  -- of two digit numbers, but that would have required a divide by 10, which
+  -- is a pain. Instead, I limit it to only 0-19, which is perfectly sufficient
+  -- for this lab and can just use a simple comparator and subtractor
+
+  -- Convenience signals
   bin_unsigned <= unsigned(binary);
   bin_m_10 <= bin_unsigned - 10;
   
+  -- Outputs 0 for the top digit and bin[3:0] for the bottom digit when bin < 10,
+  -- Otherwise, outputs 1 for the top digit and (bin-10)[3:0]
   bcd <= "0000" & binary(3 downto 0) when bin_unsigned < 10 else
          "0001" & std_logic_vector(bin_m_10(3 downto 0));
 end architecture rtl;

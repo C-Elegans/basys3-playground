@@ -6,7 +6,7 @@
 -- Author     :   <mnolan@trillian>
 -- Company    : 
 -- Created    : 2020-09-20
--- Last update: 2020-09-20
+-- Last update: 2020-09-23
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -28,6 +28,7 @@ entity baud_generator is
 
   generic (
     CLOCK_FREQUENCY: integer := 50_000_000; -- Hz
+    -- The frequency to generate ticks on baud_pulse at
     BAUD_RATE: integer := 200 -- Hz
     );
 
@@ -43,8 +44,8 @@ end entity baud_generator;
 
 architecture str of baud_generator is
 
-  signal counter : integer := 0;
   constant MAX_COUNT : integer := CLOCK_FREQUENCY / BAUD_RATE - 1;
+  signal counter : integer range 0 to MAX_COUNT+1 := 0;
 begin  -- architecture str
 
   -- purpose: increment the counter and reset if it reaches MAX_COUNT
@@ -60,6 +61,8 @@ count_proc: process (clk) is
      else
        baud_pulse <= '0';
        counter <= counter + 1;
+
+       -- Pulse and reset counter if counter reaches MAX_COUNT
        if counter >= MAX_COUNT then
          counter <= 0;
          baud_pulse <= '1';
