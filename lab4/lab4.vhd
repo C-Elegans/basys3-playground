@@ -22,6 +22,8 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
+library work;
+use work.types.all;
 -------------------------------------------------------------------------------
 
 entity lab4 is
@@ -64,8 +66,8 @@ architecture rtl of lab4 is
   -- baud_generator signals
   signal digit_switch : std_logic;
   -- segment controller signals
+  signal digits_sig : digits_t(0 to DIGITS-1);
   signal an_tmp : std_logic_vector(DIGITS-1 downto 0);
-  signal bcd_seg : std_logic_vector(3 downto 0);
   -- decoder_7seg signals
   signal seg_tmp : std_logic_vector(7 downto 0);
 
@@ -113,6 +115,18 @@ begin  -- architecture rtl
       rst        => rst,
       en => '1',
       baud_pulse => digit_switch);
+
+  
+  decoder_7seg_1: entity work.decoder_7seg
+    port map (
+      data    => bcd_digits(3 downto 0),
+      seg_out => digits_sig(0));
+
+  decoder_7seg_2: entity work.decoder_7seg
+    port map (
+      data    => bcd_digits(7 downto 4),
+      seg_out => digits_sig(1));
+
   
   segment_controller_1: entity work.segment_controller
     generic map (
@@ -121,15 +135,10 @@ begin  -- architecture rtl
       clk          => clk,
       rst          => rst,
       digit_switch => digit_switch,
-      bcd_in       => bcd_digits,
-      bcd_out      => bcd_seg,
+      digits_in       => digits_sig,
+      digits_out      => seg_tmp,
       an           => an_tmp);
   
-
-  decoder_7seg_1: entity work.decoder_7seg
-    port map (
-      data    => bcd_seg,
-      seg_out => seg_tmp);
 
   -- decoder_7seg uses active high segments with order abcdefg
   -- basys 3 uses active low segments with order gfedcba

@@ -6,7 +6,7 @@
 -- Author     :   <mnolan@trillian>
 -- Company    : 
 -- Created    : 2020-09-20
--- Last update: 2020-09-21
+-- Last update: 2020-09-27
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -23,6 +23,9 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
+library work;
+use work.types.all;
+
 -------------------------------------------------------------------------------
 
 entity segment_controller is
@@ -36,10 +39,10 @@ entity segment_controller is
     rst : in std_logic; -- synchronous reset (active high)
     digit_switch : in std_logic; -- Pulse to switch between digits
     -- bcd numbers for each digit to display
-    bcd_in : in std_logic_vector(DIGITS * 4-1 downto 0);
+    digits_in : in digits_t(0 to DIGITS-1);
 
     -- the bcd to feed into the 7 segment decoder for the current digit
-    bcd_out : out std_logic_vector(3 downto 0);
+    digits_out : out std_logic_vector(7 downto 0);
     -- the anode select pins
     an : out std_logic_vector(DIGITS-1 downto 0)
     );
@@ -76,14 +79,14 @@ begin  -- architecture rtl
   -- type   : combinational
   -- inputs : bcd_in, sel
   -- outputs: bcd_out
-  bcd_proc: process (bcd_in, sel) is
+  bcd_proc: process (digits_in, sel) is
   begin  -- process bcd_proc
-    bcd_out <= (others => '0');
+    digits_out <= (others => '0');
 
     -- Selects the bcd data to output by using sel as a 1-hot mux
     for i in 0 to DIGITS-1 loop
       if sel(i) = '1' then
-        bcd_out <= bcd_in(i*4+3 downto i*4);
+        digits_out <= digits_in(i);
       end if;
     end loop;  -- i
   end process bcd_proc;
