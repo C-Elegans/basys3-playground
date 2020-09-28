@@ -2,11 +2,11 @@
 -- Title      : Lab 3 - 16 bit count digits display
 -- Project    : 
 -------------------------------------------------------------------------------
--- File       : lab3.vhd
+-- File       : lab4.vhd
 -- Author     :   <mnolan@trillian>
 -- Company    : 
 -- Created    : 2020-09-20
--- Last update: 2020-09-22
+-- Last update: 2020-09-27
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -24,37 +24,41 @@ use ieee.std_logic_1164.all;
 
 -------------------------------------------------------------------------------
 
-entity lab3 is
+entity lab4 is
 
   generic (
     CLOCK_FREQUENCY : integer := 100_000_000;
-    SWITCH_FREQUENCY : integer := 2000
+    SWITCH_FREQUENCY : integer := 2000;
+    TICK_RATE : integer := 1
     );
 
   port (
     clk : in std_logic;
     btnC : in std_logic;
+    btnD : in std_logic;
     sw : in std_logic_vector(15 downto 0);
     led : out std_logic_vector(15 downto 0);
     seg : out std_logic_vector(7 downto 0);
     an: out std_logic_vector(3 downto 0)
     );
 
-end entity lab3;
+end entity lab4;
 
 -------------------------------------------------------------------------------
 
-architecture rtl of lab3 is
+architecture rtl of lab4 is
 
   -- Number of digits to activate
   constant DIGITS : integer := 2;
+  constant MAX_COUNT : integer := 20;
+  constant COUNTER_BITS : integer := 5;
 
   signal rst : std_logic;
   -- Flip flop synchronizer for the reset signal
   signal rst_sync : std_logic_vector(2 downto 0) := (others => '1'); 
 
-  -- popcnt signals
-  signal count : std_logic_vector(4 downto 0);
+  signal zero : std_logic;
+  signal count : std_logic_vector(COUNTER_BITS-1 downto 0);
   -- bin_to_bcd signals
   signal bcd_digits : std_logic_vector(4*DIGITS-1 downto 0);
   -- baud_generator signals
@@ -68,12 +72,12 @@ architecture rtl of lab3 is
 begin  -- architecture rtl
   -- purpose: synchronizes the reset signal to the clk clock domain
   -- type   : sequential
-  -- inputs : clk, btnC
+  -- inputs : clk, btnD
   -- outputs: rst
   rst_proc: process (clk) is
   begin  -- process rst_proc
     if rising_edge(clk) then
-      rst_sync <= rst_sync(1 downto 0) & btnC;
+      rst_sync <= rst_sync(1 downto 0) & btnD;
     end if;
   end process rst_proc;
   rst <= rst_sync(2);
@@ -81,11 +85,19 @@ begin  -- architecture rtl
   -- No other signals need to be synchronized because no other inputs feed into
   -- flip flops
 
-
-  popcnt_1: entity work.popcnt
+  timer_1: entity work.timer
+    generic map (
+      COUNTER_BITS    => COUNTER_BITS,
+      MAX_COUNT       => MAX_COUNT,
+      CLOCK_FREQUENCY => CLOCK_FREQUENCY,
+      TICK_RATE       => TICK_RATE)
     port map (
-      data  => sw,
-      count => count);
+      clk          => clk,
+      rst          => rst,
+      pause_resume => btnC,
+      count        => count,
+      zero         => zero);
+
 
   bin_to_bcd_1: entity work.bin_to_bcd
     port map (
@@ -99,8 +111,9 @@ begin  -- architecture rtl
     port map (
       clk        => clk,
       rst        => rst,
+      en => '1',
       baud_pulse => digit_switch);
-
+  
   segment_controller_1: entity work.segment_controller
     generic map (
       DIGITS => DIGITS)
@@ -117,14 +130,6 @@ begin  -- architecture rtl
     port map (
       data    => bcd_seg,
       seg_out => seg_tmp);
-
-  bargraph_1: entity work.bargraph
-    generic map (
-      NUM_BITS   => 16,
-      INPUT_BITS => 5)
-    port map (
-      count    => count,
-      bargraph => led);
 
   -- decoder_7seg uses active high segments with order abcdefg
   -- basys 3 uses active low segments with order gfedcba
