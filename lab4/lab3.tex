@@ -1,0 +1,69 @@
+\documentclass{article}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usetikzlibrary{shapes, arrows}
+\pgfdeclarelayer{background}
+\pgfsetlayers{background, main}
+\usepackage[margin=0.75in]{geometry}
+\title{VHDL Lab 3}
+\author{Michael Nolan}
+
+\lstset{
+  breaklines=true,
+  basicstyle=\ttfamily,
+  keywordstyle=\color{green!40!black},
+  identifierstyle=\color{blue},
+  commentstyle=\color{red!85!black},
+  stringstyle=\color{darkgray},
+  }
+
+
+
+\begin{document}
+\maketitle
+\newpage
+
+\section{Block diagram}
+
+\includegraphics[width=\textwidth]{lab3_diagram}
+
+Or, if you prefer yosys block diagrams:
+
+\includegraphics[width=\textwidth]{lab3_diagram_yosys}
+
+\section{VHDL code}
+\subsection{popcnt.vhd}
+\lstinputlisting[language=VHDL]{popcnt.vhd}
+
+\subsection{bin\_to\_bcd.vhd}
+\lstinputlisting[language=VHDL]{bin_to_bcd.vhd}
+
+\subsection{baud\_generator.vhd}
+\lstinputlisting[language=VHDL]{baud_generator.vhd}
+
+\subsection{segment\_controller.vhd}
+\lstinputlisting[language=VHDL]{segment_controller.vhd}
+
+\subsection{decoder\_7seg.vhd}
+\lstinputlisting[language=VHDL]{decoder_7seg.vhd}
+
+\subsection{lab3.vhd}
+\lstinputlisting[language=VHDL]{lab3.vhd}
+
+\newpage
+\section{Testbench}
+\subsection{lab3\_tb.vhd}
+\lstinputlisting[language=VHDL]{lab3_tb.vhd}
+\subsection{popcnt\_tb.vhd}
+\lstinputlisting[language=VHDL]{popcnt_tb.vhd}
+\subsection{bin\_to\_bcd\_tb.vhd}
+\lstinputlisting[language=VHDL]{bin_to_bcd_tb.vhd}
+
+\newpage
+\section{Makefile}
+\lstinputlisting[language=make]{Makefile}
+
+
+\end{document}
