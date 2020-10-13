@@ -1,12 +1,13 @@
 -------------------------------------------------------------------------------
--- Title      : Lab 3 - 16 bit count digits display
+
+-- Title      : Lab 4 - Countdown timer with "celebration"
 -- Project    : 
 -------------------------------------------------------------------------------
 -- File       : lab4.vhd
 -- Author     :   <mnolan@trillian>
 -- Company    : 
 -- Created    : 2020-09-20
--- Last update: 2020-09-27
+-- Last update: 2020-10-07
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -31,15 +32,15 @@ entity lab4 is
   generic (
     CLOCK_FREQUENCY : integer := 100_000_000;
     SWITCH_FREQUENCY : integer := 2000;
-    TICK_RATE : integer := 1
+    TICK_RATE : integer := 1;
+    CELEBRATION_TICK_RATE : integer := 10
     );
 
   port (
     clk : in std_logic;
     btnC : in std_logic;
     btnD : in std_logic;
-    sw : in std_logic_vector(15 downto 0);
-    led : out std_logic_vector(15 downto 0);
+    btnU : in std_logic;
     seg : out std_logic_vector(7 downto 0);
     an: out std_logic_vector(3 downto 0)
     );
@@ -51,18 +52,20 @@ end entity lab4;
 architecture rtl of lab4 is
 
   -- Number of digits to activate
-  constant DIGITS : integer := 2;
+  constant DIGITS : integer := 4;
   constant MAX_COUNT : integer := 20;
   constant COUNTER_BITS : integer := 5;
 
   signal rst : std_logic;
+  signal rst_timer : std_logic;
   -- Flip flop synchronizer for the reset signal
   signal rst_sync : std_logic_vector(2 downto 0) := (others => '1'); 
+  signal rst_timer_sync : std_logic_vector(2 downto 0) := (others => '1'); 
 
   signal zero : std_logic;
   signal count : std_logic_vector(COUNTER_BITS-1 downto 0);
   -- bin_to_bcd signals
-  signal bcd_digits : std_logic_vector(4*DIGITS-1 downto 0);
+  signal bcd_digits : std_logic_vector(7 downto 0);
   -- baud_generator signals
   signal digit_switch : std_logic;
   -- segment controller signals
@@ -79,10 +82,12 @@ begin  -- architecture rtl
   rst_proc: process (clk) is
   begin  -- process rst_proc
     if rising_edge(clk) then
-      rst_sync <= rst_sync(1 downto 0) & btnD;
+      rst_sync <= rst_sync(1 downto 0) & btnU;
+      rst_timer_sync <= rst_timer_sync(1 downto 0) & btnD;
     end if;
   end process rst_proc;
   rst <= rst_sync(2);
+  rst_timer <= rst_timer_sync(2) or rst;
 
   -- No other signals need to be synchronized because no other inputs feed into
   -- flip flops
@@ -95,7 +100,7 @@ begin  -- architecture rtl
       TICK_RATE       => TICK_RATE)
     port map (
       clk          => clk,
-      rst          => rst,
+      rst          => rst_timer,
       pause_resume => btnC,
       count        => count,
       zero         => zero);
@@ -127,6 +132,15 @@ begin  -- architecture rtl
       data    => bcd_digits(7 downto 4),
       seg_out => digits_sig(1));
 
+  celebration_1: entity work.celebration
+    generic map (
+      CLOCK_FREQUENCY => CLOCK_FREQUENCY,
+      TICK_RATE       => CELEBRATION_TICK_RATE)
+    port map (
+      clk          => clk,
+      rst          => rst,
+      en           => zero,
+      digits_celeb => digits_sig(2 to 3));
   
   segment_controller_1: entity work.segment_controller
     generic map (

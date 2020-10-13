@@ -6,11 +6,11 @@
 -- Author     :   <mnolan@trillian>
 -- Company    : 
 -- Created    : 2020-09-20
--- Last update: 2020-09-27
+-- Last update: 2020-10-05
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
--- Description: selects bcd digits and anode outputs from a bcd input and pulse
+-- Description: selects segment digits and anode outputs from a segment input and pulse
 -- train
 -------------------------------------------------------------------------------
 -- Copyright (c) 2020 
@@ -38,10 +38,10 @@ entity segment_controller is
     clk : in std_logic;
     rst : in std_logic; -- synchronous reset (active high)
     digit_switch : in std_logic; -- Pulse to switch between digits
-    -- bcd numbers for each digit to display
+    -- 7 segment pattern for each digit
     digits_in : in digits_t(0 to DIGITS-1);
 
-    -- the bcd to feed into the 7 segment decoder for the current digit
+    -- the 7 segment pattern to send to the display
     digits_out : out std_logic_vector(7 downto 0);
     -- the anode select pins
     an : out std_logic_vector(DIGITS-1 downto 0)
@@ -75,21 +75,22 @@ begin  -- architecture rtl
   end process sel_proc;
 
 
-  -- purpose: mux to select which bcd digit gets output to bcd_out -- selected using sel as 1-hot selector
+  -- purpose: mux to select which 7 segment pattern gets output to digits_out
+  -- selected using sel as 1-hot selector
   -- type   : combinational
-  -- inputs : bcd_in, sel
-  -- outputs: bcd_out
-  bcd_proc: process (digits_in, sel) is
-  begin  -- process bcd_proc
+  -- inputs : digits_in, sel
+  -- outputs: digits_out
+  digit_proc: process (digits_in, sel) is
+  begin  -- process digit_proc
     digits_out <= (others => '0');
 
-    -- Selects the bcd data to output by using sel as a 1-hot mux
+    -- Selects the 7 segment data to output by using sel as a 1-hot mux
     for i in 0 to DIGITS-1 loop
       if sel(i) = '1' then
         digits_out <= digits_in(i);
       end if;
     end loop;  -- i
-  end process bcd_proc;
+  end process digit_proc;
 
   an <= sel;
 end architecture rtl;

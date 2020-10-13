@@ -3,7 +3,9 @@ PROJECT_NAME=lab4
 .PHONY: all
 all: $(PROJECT_NAME).bit
 
-$(PROJECT_NAME).json: $(PROJECT_NAME).vhd baud_generator.vhd timer.vhd decoder_7seg.vhd segment_controller.vhd bin_to_bcd.vhd types.vhd
+PROJECT_DEPS=baud_generator.vhd timer.vhd decoder_7seg.vhd segment_controller.vhd bin_to_bcd.vhd types.vhd celebration.vhd
+
+$(PROJECT_NAME).json: $(PROJECT_NAME).vhd $(PROJECT_DEPS)
 	yosys -m ghdl -p "ghdl $^ -e $(PROJECT_NAME); write_ilang $(PROJECT_NAME).il; synth_xilinx -flatten -abc9 -nobram -arch xc7 -top $(PROJECT_NAME); write_json $@" | tee yosys.log
 
 $(PROJECT_NAME).fasm: $(PROJECT_NAME).json
@@ -19,7 +21,8 @@ prog: $(PROJECT_NAME).bit
 
 
 timer.o: baud_generator.o
-lab4.o: baud_generator.o timer.o decoder_7seg.o segment_controller.o bin_to_bcd.o types.o
+segment_controller.o: types.o
+lab4.o: baud_generator.o $(patsubst %.vhd, %.o, $(PROJECT_DEPS))
 %_tb.o: %.o
 %.o: %.vhd
 	ghdl -a --std=08 $<

@@ -7,7 +7,7 @@
 \pgfdeclarelayer{background}
 \pgfsetlayers{background, main}
 \usepackage[margin=0.75in]{geometry}
-\title{VHDL Lab 3}
+\title{VHDL Lab 4}
 \author{Michael Nolan}
 
 \lstset{
@@ -27,39 +27,41 @@
 
 \section{Block diagram}
 
-\includegraphics[width=\textwidth]{lab3_diagram}
+\includegraphics[width=\textwidth]{lab4_diagram}
 
-Or, if you prefer yosys block diagrams:
-
-\includegraphics[width=\textwidth]{lab3_diagram_yosys}
+There really isn't any good software for drawing HDL block diagrams. I've tried tikz, draw.io, and now graphviz, and none are particularly nice. 
 
 \section{VHDL code}
-\subsection{popcnt.vhd}
-\lstinputlisting[language=VHDL]{popcnt.vhd}
+\subsection{lab4.vhd}
+\lstinputlisting[language=VHDL]{lab4.vhd}
 
-\subsection{bin\_to\_bcd.vhd}
-\lstinputlisting[language=VHDL]{bin_to_bcd.vhd}
+\subsection{timer.vhd}
+\lstinputlisting[language=VHDL]{timer.vhd}
 
 \subsection{baud\_generator.vhd}
 \lstinputlisting[language=VHDL]{baud_generator.vhd}
 
-\subsection{segment\_controller.vhd}
-\lstinputlisting[language=VHDL]{segment_controller.vhd}
+\subsection{bin\_to\_bcd.vhd}
+\lstinputlisting[language=VHDL]{bin_to_bcd.vhd}
 
 \subsection{decoder\_7seg.vhd}
 \lstinputlisting[language=VHDL]{decoder_7seg.vhd}
 
-\subsection{lab3.vhd}
-\lstinputlisting[language=VHDL]{lab3.vhd}
+\subsection{celebration.vhd}
+\lstinputlisting[language=VHDL]{celebration.vhd}
+
+\subsection{segment\_controller.vhd}
+\lstinputlisting[language=VHDL]{segment_controller.vhd}
+
+\subsection{types.vhd}
+\lstinputlisting[language=VHDL]{types.vhd}
 
 \newpage
 \section{Testbench}
-\subsection{lab3\_tb.vhd}
-\lstinputlisting[language=VHDL]{lab3_tb.vhd}
-\subsection{popcnt\_tb.vhd}
-\lstinputlisting[language=VHDL]{popcnt_tb.vhd}
-\subsection{bin\_to\_bcd\_tb.vhd}
-\lstinputlisting[language=VHDL]{bin_to_bcd_tb.vhd}
+\subsection{lab4\_tb.vhd}
+\lstinputlisting[language=VHDL]{lab4_tb.vhd}
+\subsection{timer\_tb.vhd}
+\lstinputlisting[language=VHDL]{timer_tb.vhd}
 
 \newpage
 \section{Makefile}

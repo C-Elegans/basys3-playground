@@ -6,7 +6,7 @@
 -- Author     :   <mnolan@trillian>
 -- Company    : 
 -- Created    : 2020-09-27
--- Last update: 2020-09-27
+-- Last update: 2020-10-11
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -34,14 +34,14 @@ architecture tb of lab4_tb is
 
   -- component generics
   constant CLOCK_FREQUENCY  : integer := 100_000_000;
-  constant SWITCH_FREQUENCY : integer := 50_000_000;
-  constant TICK_RATE        : integer := 10_000_000;
+  constant SWITCH_FREQUENCY : integer := 10_000_000;
+  constant TICK_RATE        : integer := 50_000_000;
+  constant CELEBRATION_TICK_RATE : integer := 10_000_000;
 
   -- component ports
   signal btnC : std_logic := '0';
   signal btnD : std_logic := '0';
-  signal sw   : std_logic_vector(15 downto 0);
-  signal led  : std_logic_vector(15 downto 0);
+  signal btnU : std_logic := '0';
   signal seg  : std_logic_vector(7 downto 0);
   signal an   : std_logic_vector(3 downto 0);
 
@@ -55,13 +55,13 @@ begin  -- architecture tb
     generic map (
       CLOCK_FREQUENCY  => CLOCK_FREQUENCY,
       SWITCH_FREQUENCY => SWITCH_FREQUENCY,
-      TICK_RATE        => TICK_RATE)
+      TICK_RATE        => TICK_RATE,
+      CELEBRATION_TICK_RATE => CELEBRATION_TICK_RATE)
     port map (
       clk  => clk,
       btnC => btnC,
       btnD => btnD,
-      sw   => sw,
-      led  => led,
+      btnU => btnU,
       seg  => seg,
       an   => an);
 
@@ -71,10 +71,37 @@ begin  -- architecture tb
   -- waveform generation
   WaveGen_Proc: process
   begin
-    btnD <= '1';
+    -- reset the design
+    btnU <= '1';
     wait for 10 ns;
-    btnD <= '0';
+    btnU <= '0';
     wait for 100 ns;
+
+    -- unpause the counter
+    btnC <= '1';
+    wait for 40 ns;
+    btnC <= '0';
+    wait for 1000 ns;
+
+    -- pause the counter
+    btnC <= '1';
+    wait for 40 ns;
+    btnC <= '0';
+    wait for 500 ns;
+
+    -- unpause again
+    btnC <= '1';
+    wait for 40 ns;
+    btnC <= '0';
+
+    -- Reset the counter back to 20
+    wait for 2500 ns;
+    btnD <= '1';
+    wait for 40 ns;
+    btnD <= '0';
+    wait for 500 ns;
+
+    -- unpause the counter
     btnC <= '1';
     wait for 40 ns;
     btnC <= '0';

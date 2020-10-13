@@ -6,7 +6,7 @@
 -- Author     :   <mnolan@trillian>
 -- Company    : 
 -- Created    : 2020-09-27
--- Last update: 2020-09-27
+-- Last update: 2020-10-05
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -97,6 +97,7 @@ begin  -- architecture str
         end if;
 
 
+        -- count down timer every time baud_generator outputs a pulse
         if baud_pulse = '1' then
           if count_tmp /= 0 then
             count_tmp <= count_tmp - 1;

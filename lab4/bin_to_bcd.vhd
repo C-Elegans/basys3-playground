@@ -6,7 +6,7 @@
 -- Author     :   <mnolan@trillian>
 -- Company    : 
 -- Created    : 2020-09-20
--- Last update: 2020-09-27
+-- Last update: 2020-10-05
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -53,7 +53,8 @@ begin  -- architecture str
   bin_m_20 <= bin_unsigned - 20;
   
   -- Outputs 0 for the top digit and bin[3:0] for the bottom digit when bin < 10,
-  -- Otherwise, outputs 1 for the top digit and (bin-10)[3:0]
+  -- Outputs 1 for the top digit and (bin-10)[3:0] for the bottom digit when bin < 20
+  -- Otherwise, outputs 2 for the top digit and (bin-20)[3:0]
   bcd <= "0000" & binary(3 downto 0) when bin_unsigned < 10 else
          "0001" & std_logic_vector(bin_m_10(3 downto 0)) when bin_unsigned < 20 else
          "0010" & std_logic_vector(bin_m_20(3 downto 0));
